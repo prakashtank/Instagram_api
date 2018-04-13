@@ -1,0 +1,281 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * CodeIgniter
+ *
+ * An open source application development framework for PHP 7.1 or newer
+ *
+ * @package     CodeIgniter
+ * @author      Tank Prakash
+ * @copyright   Copyright (c) 2018, Tank Prakash.
+ * @license     
+ * @link        https://www.nightdecoder.com
+ * @since       Version 1.0
+ * @filesource
+ */
+
+// ------------------------------------------------------------------------
+
+/**
+ * Tank Prakash core CodeIgniter class
+ *
+ * @package     CodeIgniter
+ * @subpackage  Libraries
+ * @category    Instagram API Lib 
+ * @author      Tank Prakash
+ * @link        https://www.nightdecoder.com
+ */
+
+/**
+API request
+
+User Endpoints
+
+1.getAccessToken - get access token using code.
+2.getInformationAbout  - Get information about the owner of the access_token.
+3.getInformationAboutUser - Get information about a user.
+4.getSelfMedia - Get the most recent media published by the owner of the access_token.
+5.getUserMedia - Get the most recent media published by a user.
+6.getSelfRecentMediaLiked - Get the list of recent media liked by the owner of the access_token.
+7.getUserSearch - Get a list of users matching the query.
+
+Relationship Endpoints
+
+1.getSelfFollows - Get the list of users this user follows.
+2.getSelfFollowedBy - Get the list of users this user is followed by.
+3.getSelfRequestBy - List the users who have requested this user's permission to follow. 
+4.getUserRelationship - Get information about a relationship to another user.
+5.postUserRelationship - Modify the relationship between the current user and the target user. 
+
+Media Endpoints
+
+1.getMediaById - Get information about a media objec.
+2.getMediaByShortcode - Get information about a media object.
+3.getMediaSearch - Search for recent media in a given area.
+
+Comment Endpoints
+
+1.getMediaComment - Get a list of recent comments on a media object.
+2.postMediaComment - Create a comment on a media object.
+3.delMediaComment - delete comment on a media object.
+
+Like Endpoints
+
+1.getMediaLikes - Get a list of users who have liked this media.
+2.postMediaLikes - Set a like on this media by the currently authenticated use.
+3.delMediaLikes - Remove a like on this media by the currently authenticated user.
+
+
+**/
+
+
+
+class Instagram_api {
+
+   
+
+    public function getAccessToken($url, $postData)
+    {
+        return $this->curlPost($url, $postData);
+    }
+
+    public function getInformationAbout($accessToken)
+    {
+        //https://api.instagram.com/v1/users/self/?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/self/';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+   
+    public function getInformationAboutUser($userID, $accessToken)
+    {
+        //https://api.instagram.com/v1/users/{user-id}/?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/'.$userID.'/';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+   
+    public function getSelfMedia($accessToken)
+    {
+        //https://api.instagram.com/v1/users/self/media/recent/?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/self/media/recent/';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function getUserMedia($userID, $accessToken)
+    {
+        //https://api.instagram.com/v1/users/{user-id}/media/recent/?access_token=ACCESS-TOKE
+        $url = API_URL.'v1/users/'.$userID.'/media/recent/';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function getSelfRecentMediaLiked($accessToken)
+    {
+        //https://api.instagram.com/v1/users/self/media/liked?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/self/media/liked/';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+
+    }
+
+    public function getUserSearch($keyword, $accessToken)
+    {
+        //https://api.instagram.com/v1/users/search?q=jack&access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/search';
+        $paramArray = 'q='.$keyword.'&access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function getSelfFollows($accessToken)
+    {
+        //https://api.instagram.com/v1/users/self/follows?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/self/follows';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+
+    }
+
+    public function getSelfFollowedBy($accessToken)
+    {
+        //https://api.instagram.com/v1/users/self/followed-by?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/self/followed-by';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function getSelfRequestBy($accessToken)
+    {
+        //https://api.instagram.com/v1/users/self/requested-by?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/self/requested-by';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    /*public function getUserRelationship($userID, $accessToken)
+    {
+        //https://api.instagram.com/v1/users/{user-id}/relationship?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/users/'.$userID.'/relationship';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }*/
+
+    public function getMediaById($mediaID, $accessToken)
+    {
+        //https://api.instagram.com/v1/media/{media-id}?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/media/'.$mediaID;
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+
+    public function getMediaByShortcode($shortCode, $accessToken)
+    {
+        //https://api.instagram.com/v1/media/shortcode/D?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/media/shortcode/'.$shortCode;
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function getMediaSearch($lat, $lng, $distance, $accessToken)
+    {
+        //https://api.instagram.com/v1/media/search?lat=23.196337323885&lng=72.633250135343&access_token=2158744138.3b466e7.90c191b802ac4d1494af19aade6923db&distance=1000
+
+        $url = API_URL.'v1/media/search';
+        $paramArray = 'lat='.$lat.'&lng='.$lng.'&distance='.$distance.'&access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+
+    }
+
+    public function getMediaComments($mediaID, $accessToken)
+    {
+        //https://api.instagram.com/v1/media/{media-id}/comments?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/media/'.$mediaID.'/comments';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function postMediaComments($mediaID, $text, $accessToken)
+    {
+        /**curl -F 'access_token=ACCESS-TOKEN' \
+             -F 'text=This+is+my+comment' \
+             https://api.instagram.com/v1/media/{media-id}/comments
+        **/
+        $url = API_URL.'v1/media/'.$mediaID.'/comments';
+        $paramArray = 'text='.$text.'&access_token='.$accessToken;
+        return $this->curlPost($url, $paramArray);
+
+    }
+
+    public function delMediaComments($mediaID, $commentID, $accessToken)
+    {
+        //curl -X DELETE https://api.instagram.com/v1/media/{media-id}/comments/{comment-id}?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/media/'.$mediaID.'/comments/'.$commentID;
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlDelele($url, $paramArray);
+
+    }
+
+    public function getMediaLikes($mediaID, $accessToken)
+    {
+        //https://api.instagram.com/v1/media/{media-id}/likes?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/media/'.$mediaID.'/likes';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlGet($url, $paramArray);
+    }
+
+    public function delMediaLikes($mediaID, $accessToken)
+    {
+        //curl -X DELETE https://api.instagram.com/v1/media/{media-id}/likes?access_token=ACCESS-TOKEN
+        $url = API_URL.'v1/media/'.$mediaID.'/likes/'.$commentID;
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlDelele($url, $paramArray);
+    }
+
+    public function postMediaLikes($mediaID, $accessToken)
+    {
+        /**curl -F 'access_token=ACCESS-TOKEN' \
+           https://api.instagram.com/v1/media/{media-id}/likes
+        **/
+        $url = API_URL.'v1/media/'.$mediaID.'/likes';
+        $paramArray = 'access_token='.$accessToken;
+        return $this->curlPost($url, $paramArray);
+
+    }
+
+    public function curlPost($url, $postData)
+    {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return json_decode($response,true);
+    }
+
+    public function curlGet($url, $paramArray)
+    {
+        //$post = ['batch_id'=> "2"];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url.'?'.$paramArray);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        return json_decode($response, true);
+  
+    }
+
+    public function curlDelele($url, $paramArray)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url.'?'.$paramArray);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Should cURL return or print out the data? (true = return, false = print)
+        $response = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($response, true);
+    }
+}
